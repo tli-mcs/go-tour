@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -25,4 +26,20 @@ func TestEx002(t *testing.T) {
 		t.Errorf("Ex002() = %v, want %v", got, want)
 	}
 
+}
+
+func TestEx005(t *testing.T) {
+	// check for error
+	want := "HELLO WORLD!"
+
+	ReadString()
+	got := PrintString()
+	//got = "afdsas"
+
+	if got != want {
+		fmt.Println(fmt.Errorf("Error: Ex005() = %v, want %v", got, want))
+		return
+	}
+
+	fmt.Println(got)
 }
