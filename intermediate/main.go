@@ -43,3 +43,11 @@ func Ex008(input string) string {
 	sort.Strings(arr)
 	return strings.Join(arr, ",")
 }
+
+func Ex009(input []string) []string {
+	output := make([]string, len(input))
+	for i, v := range input {
+		output[i] = strings.ToUpper(v)
+	}
+	return output
+}
