@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -11,7 +12,7 @@ const C = 50
 const H = 30
 
 func main() {
-	fmt.Println(Ex007(3, 5))
+	fmt.Println(Ex008("without,hello,bag,world"))
 }
 
 func Ex006(input string) map[int]int {
@@ -34,4 +35,11 @@ func Ex007(inputX int, inputY int) [][]int {
 		}
 	}
 	return result
+}
+
+func Ex008(input string) string {
+	arr := strings.Split(input, ",")
+
+	sort.Strings(arr)
+	return strings.Join(arr, ",")
 }
