@@ -12,7 +12,7 @@ const C = 50
 const H = 30
 
 func main() {
-	fmt.Println(Ex008("without,hello,bag,world"))
+	fmt.Println(Ex010("hello world and practice makes perfect and hello world again"))
 }
 
 func Ex006(input string) map[int]int {
@@ -50,4 +50,19 @@ func Ex009(input []string) []string {
 		output[i] = strings.ToUpper(v)
 	}
 	return output
+}
+
+func Ex010(input string) string {
+	arr := strings.Split(input, " ")
+	sort.Strings(arr)
+	seen := make(map[string]int)
+	result := []string{}
+	for _, v := range arr {
+		if _, ok := seen[v]; !ok {
+			seen[v] = 1
+			result = append(result, v)
+		}
+	}
+
+	return strings.Join(result, " ")
 }
