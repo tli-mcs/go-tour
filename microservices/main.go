@@ -16,12 +16,10 @@ var bindAddress = env.String("BIND_ADDRESS", false, ":9090", "Bind address for t
 
 func main() {
 	l := log.New(os.Stdout, "products-api ", log.LstdFlags)
-	hh := handlers.NewHello(l)
-	gh := handlers.NewGoodbye(l)
+	ph := handlers.NewProducts(l)
 
 	sm := http.NewServeMux()
-	sm.Handle("/", hh)
-	sm.Handle("/goodbye", gh)
+	sm.Handle("/", ph)
 
 	s := http.Server{
 		Addr: ":9090", // configure the bind address
