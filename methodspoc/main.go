@@ -5,22 +5,36 @@ import (
 	"math"
 )
 
-type Vertex struct {
-	X, Y float64
+type I interface {
+	M()
 }
 
-func (v *Vertex) Scale(f float64) {
-	v.X = v.X * f
-	v.Y = v.Y * f
+type T struct {
+	S string
 }
 
-func (v *Vertex) Abs() float64 {
-	return math.Sqrt(v.X*v.X + v.Y*v.Y)
+func (t *T) M() {
+	fmt.Println(t.S)
+}
+
+type F float64
+
+func (f F) M() {
+	fmt.Println(f)
 }
 
 func main() {
-	v := &Vertex{3, 4}
-	fmt.Printf("缩放前：%+v，绝对值：%v\n", v, v.Abs())
-	v.Scale(5)
-	fmt.Printf("缩放后：%+v，绝对值：%v\n", v, v.Abs())
+	var i I
+
+	i = &T{"Hello"}
+	describe(i)
+	i.M()
+
+	i = F(math.Pi)
+	describe(i)
+	i.M()
+}
+
+func describe(i I) {
+	fmt.Printf("(%v, %T)\n", i, i)
 }
