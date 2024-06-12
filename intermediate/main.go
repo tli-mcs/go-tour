@@ -12,7 +12,7 @@ const C = 50
 const H = 30
 
 func main() {
-	fmt.Println(Ex010("hello world and practice makes perfect and hello world again"))
+	fmt.Println(Ex012())
 }
 
 func Ex006(input string) map[int]int {
@@ -65,4 +65,38 @@ func Ex010(input string) string {
 	}
 
 	return strings.Join(result, " ")
+}
+
+func Ex011(input string) string {
+	numbers := strings.Split(input, ",")
+	result := []string{}
+	for _, v := range numbers {
+		// convert
+		convertedNum, _ := strconv.ParseInt(v, 2, 64)
+		if convertedNum%5 == 0 {
+			result = append(result, v)
+		}
+	}
+	return strings.Join(result, ",")
+}
+
+func Ex012() string {
+	result := []string{}
+	for i := 100; i <= 300; i++ {
+		allEven := true
+		number := i
+		for number != 0 {
+			digit := number % 10
+			if digit%2 != 0 {
+				allEven = false
+				break
+			}
+			number = number / 10
+		}
+		if allEven {
+			result = append(result, strconv.Itoa(i))
+		}
+	}
+
+	return strings.Join(result, ",")
 }
