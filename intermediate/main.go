@@ -6,13 +6,14 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 const C = 50
 const H = 30
 
 func main() {
-	fmt.Println(Ex012())
+	Ex013("hello world! 123")
 }
 
 func Ex006(input string) map[int]int {
@@ -99,4 +100,19 @@ func Ex012() string {
 	}
 
 	return strings.Join(result, ",")
+}
+
+func Ex013(input string) {
+	letters := 0
+	digits := 0
+	for _, char := range input {
+		if unicode.IsLetter(char) {
+			letters++
+		}
+		if unicode.IsDigit(char) {
+			digits++
+		}
+	}
+	fmt.Printf("LETTERS %v\n", letters)
+	fmt.Printf("DIGITS  %v\n", digits)
 }
