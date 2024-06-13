@@ -1,17 +1,18 @@
 package main
 
-import (
-	"os"
-)
+import "fmt"
+
+type Hotel struct {
+	numRooms   int32
+	streetName string
+	hasPool    bool
+}
 
 func main() {
-	file, err := os.Create("create-file.txt")
-
-	if err != nil {
-		return
+	h := Hotel{
+		numRooms:   100,
+		streetName: "Main St",
+		hasPool:    true,
 	}
-
-	defer file.Close()
-
-	file.WriteString("Germany\nFrance\nUSA\nSpain\nUK\n")
+	fmt.Println(h)
 }
