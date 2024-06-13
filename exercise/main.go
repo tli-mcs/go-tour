@@ -1,18 +1,13 @@
+// Exercise: Pointers
+
+// Print the address of a variable
 package main
 
 import "fmt"
 
-type Hotel struct {
-	numRooms   int32
-	streetName string
-	hasPool    bool
-}
-
 func main() {
-	h := Hotel{
-		numRooms:   100,
-		streetName: "Main St",
-		hasPool:    true,
-	}
-	fmt.Println(h)
+	var x int = 5
+	// Your code goes here
+	var p = &x
+	fmt.Println(p)
 }
