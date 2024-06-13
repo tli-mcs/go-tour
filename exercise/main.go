@@ -1,15 +1,17 @@
 package main
 
 import (
-	"fmt"
 	"os"
 )
 
 func main() {
-	_, err := os.Stat("go.mod")
+	file, err := os.Create("create-file.txt")
+
 	if err != nil {
-		fmt.Printf("File does not exist\n")
-	} else {
-		fmt.Printf("File exists\n")
+		return
 	}
+
+	defer file.Close()
+
+	file.WriteString("Germany\nFrance\nUSA\nSpain\nUK\n")
 }
