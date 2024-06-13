@@ -1,19 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 func main() {
-	var number int
-	fmt.Print("Enter an integer: ")
-	_, err := fmt.Scan(&number)
+	_, err := os.Stat("go.mod")
 	if err != nil {
-		fmt.Println("Failed to read integer:", err)
+		fmt.Printf("File does not exist\n")
 	} else {
-		if number%2 == 0 {
-			fmt.Println(number, "is even")
-		} else {
-			fmt.Println(number, "is odd")
-		}
+		fmt.Printf("File exists\n")
 	}
-
 }
