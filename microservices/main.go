@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/nicholasjackson/env"
 	"github.com/tli-mcs/gotour/microservices/handlers" // Replace "your-package-path" with the actual package path
 )
@@ -15,15 +16,33 @@ import (
 var bindAddress = env.String("BIND_ADDRESS", false, ":9090", "Bind address for the server")
 
 func main() {
+
+	env.Parse()
+
 	l := log.New(os.Stdout, "products-api ", log.LstdFlags)
+
+	// create the handlers
 	ph := handlers.NewProducts(l)
 
-	sm := http.NewServeMux()
-	sm.Handle("/", ph)
+	// create a new serve mux and register the handlers
+	sm := mux.NewRouter()
 
+	getRouter := sm.Methods(http.MethodGet).Subrouter()
+	getRouter.HandleFunc("/", ph.GetProducts)
+
+	putRouter := sm.Methods(http.MethodPut).Subrouter()
+	putRouter.HandleFunc("/{id:[0-9]+}", ph.UpdateProducts)
+	putRouter.Use(ph.MiddlewareValidateProduct)
+
+	postRouter := sm.Methods(http.MethodPost).Subrouter()
+	postRouter.HandleFunc("/", ph.AddProduct)
+	postRouter.Use(ph.MiddlewareValidateProduct)
+
+	//sm.Handle("/products", ph)
+
+	// create a new server
 	s := http.Server{
-		Addr: ":9090", // configure the bind address
-		// Addr:         *bindAddress,      // configure the bind address
+		Addr:         *bindAddress,      // configure the bind address
 		Handler:      sm,                // set the default handler
 		ErrorLog:     l,                 // set the logger for the server
 		ReadTimeout:  5 * time.Second,   // max time to read request from the client
