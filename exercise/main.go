@@ -1,32 +1,34 @@
+// Exercise: Channels (buffered)
+
+// Channels that accept a single message (<-) are synchronous. But go also can use async channels, or buffered channels
+// Create a buffered string channel with a capacity of 4
+// Send directly 4 different strings to that channel.
+// Use the pop_message function 4 times to unbuffer the channel and see how it works
+
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
+func pop_message(c chan string) {
+	msg := <-c
+	fmt.Println(msg)
+}
 func main() {
-	ch1 := make(chan int)
-	ch2 := make(chan int)
-	// 开启goroutine将0~10的数发送到ch1中
-	go func() {
-		for i := 0; i < 10; i++ {
-			ch1 <- i
-			fmt.Println("ch1 <-", i)
-		}
-		close(ch1)
-	}()
-	// 开启goroutine从ch1中接收值，并将该值的平方发送到ch2中
-	go func() {
-		for {
-			i, ok := <-ch1 // 通道关闭后再取值ok=false
-			if !ok {
-				break
-			}
-			ch2 <- i * i
-			fmt.Println("ch2 <-", i*i)
-		}
-		close(ch2)
-	}()
-	// 在主goroutine中从ch2中接收值打印
-	for i := range ch2 { // 通道关闭后会退出for range循环
-		fmt.Println("result: ", i)
-	}
+	// Your code goes here
+	var c chan string = make(chan string, 4)
+	c <- "My"
+	c <- "Name"
+	c <- "is"
+	c <- "Enin"
+
+	pop_message(c)
+	pop_message(c)
+	pop_message(c)
+	pop_message(c)
+
+	// this sleep is in order to not exit the program sooner than the routine lifetime :)
+	time.Sleep(1 * time.Second)
 }
