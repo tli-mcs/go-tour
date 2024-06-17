@@ -1,31 +1,32 @@
-// Exercise: Routines
-
-// Document yourself and ask what a goroutine is.
-// Make a go routine of the counter() function
-// right after calling the go routine, in the next line. call the same routine with another different number
-
 package main
 
-import (
-	"fmt"
-	"strconv"
-	"time"
-)
-
-func counter(x int, y string) {
-	for i := 0; i < x; i++ {
-		fmt.Println(y + " print: " + strconv.Itoa(i))
-		time.Sleep(1 * time.Second)
-	}
-}
+import "fmt"
 
 func main() {
-	// Your code goes here
-	go counter(10, "goroutine 1")
-	counter(10, "main routine")
-	go counter(10, "goroutine 2")
-
-	// this sleep is in order to not exit the program sooner than the routine lifetime :)
-	time.Sleep(20 * time.Second)
-	fmt.Println("All finished")
+	ch1 := make(chan int)
+	ch2 := make(chan int)
+	// 开启goroutine将0~10的数发送到ch1中
+	go func() {
+		for i := 0; i < 10; i++ {
+			ch1 <- i
+			fmt.Println("ch1 <-", i)
+		}
+		close(ch1)
+	}()
+	// 开启goroutine从ch1中接收值，并将该值的平方发送到ch2中
+	go func() {
+		for {
+			i, ok := <-ch1 // 通道关闭后再取值ok=false
+			if !ok {
+				break
+			}
+			ch2 <- i * i
+			fmt.Println("ch2 <-", i*i)
+		}
+		close(ch2)
+	}()
+	// 在主goroutine中从ch2中接收值打印
+	for i := range ch2 { // 通道关闭后会退出for range循环
+		fmt.Println("result: ", i)
+	}
 }
