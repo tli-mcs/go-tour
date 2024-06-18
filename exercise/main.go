@@ -1,20 +1,21 @@
-// Exercise: Channels directions (only read/rx)
+// Exercise: Channels directions (only send/tx)
 
-// Make a goroutine with a channel for only receive data.
-// The function should be called "receive" and the receive-only channel should be it's 1st and only argument
-// Sending data from that channel is prohibited / will cause compiler errors
-// Feed some string into that channel.
+// Make a goroutine with a channel for only send data.
+// The function should be called "send" and the send-only channel should be it's 1st and only argument
+// Receive data from that channel is prohibited / will cause compiler errors
 
 package main
 
 import "fmt"
 
-func receive(c <-chan string) {
-	fmt.Println(<-c)
+func send(c chan<- string) {
+	c <- "Only send"
 }
 
 func main() {
-	var c chan string = make(chan string, 1)
-	c <- "HelloWorld!"
-	receive(c)
+	var c chan string = make(chan string, 2)
+	c <- "hahah"
+	send(c)
+	fmt.Println(<-c)
+	fmt.Println(<-c)
 }
