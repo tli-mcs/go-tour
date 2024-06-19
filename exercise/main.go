@@ -1,9 +1,9 @@
 // Exercise: JSON!!
 
-// Create a struct "Human", with 2 string attributes: Name and Description
-
-// Keep the Human struct, now in the json object there are going to be 2 humans
-// create a "humans" array of type Human and print it's values.
+// Create a struct called "Dimensions" with 2 string attributes: Height and Weight
+// Create a struct "Human", with 2 string attributes: Name and Description and one called "Dimensions" of type Dimensions
+// Now in the json object we are going to have a nested object
+// Print out the values ONLY of that nested object
 
 package main
 
@@ -15,17 +15,23 @@ import (
 type Human struct {
 	Name        string
 	Description string
+	Dimensions  Dimensions
+}
+
+type Dimensions struct {
+	Height string
+	Weight string
 }
 
 func main() {
-	humansJson := `[{"name": "Rick",
-                 "description": "has a grandson called Morty"},
-                {"name": "Cactus",
-                 "description": "is one of the powerpuff girls' name"}]`
-
-	var humans []Human
-	json.Unmarshal([]byte(humansJson), &humans)
-
-	fmt.Println(humans[0].Name + " is old and " + humans[0].Description)
-	fmt.Println(humans[1].Name + " is young and  " + humans[1].Description)
+	humanJson := `{"name": "Rick",
+                  "description": "has a grandson called Morty",
+                  "dimensions": { 
+                    "height": "1.80m",
+                    "weight": "50kg"
+                  }
+                }`
+	human := Human{}
+	json.Unmarshal([]byte(humanJson), &human)
+	fmt.Println(human.Dimensions)
 }
