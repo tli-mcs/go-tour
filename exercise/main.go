@@ -1,19 +1,24 @@
-// Exercise: Channels - Closing
+// Exercise: Tickers
 
-// Create a string channel "c" (make it a buffered channel)
-// Add 2 different strings directly into that channel.
-// Close the channel with the close() statement and read a quote from the channel, Can you read it?
+// Create a goroutine with a infinite loop
+// The condition for that infinite loop will be a range that goes over the "time.Tick(time.Second * 1)"
+// And at every Tick, we will print "Tick"
+// In the main function, call the go routine :)
 
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
+
+func task() {
+	for range time.Tick(time.Second * 1) {
+		fmt.Println("Tick ")
+	}
+}
 
 func main() {
-	c := make(chan string, 2)
-	c <- "Hello"
-	c <- "World"
-	fmt.Println(<-c)
-	close(c)
-	c <- "abc"
-	fmt.Println(<-c) // panic: send on closed channel
+	go task()
+	time.Sleep(time.Second * 5)
 }
