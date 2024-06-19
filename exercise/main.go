@@ -1,24 +1,31 @@
-// Exercise: Tickers
+// Exercise: JSON!!
 
-// Create a goroutine with a infinite loop
-// The condition for that infinite loop will be a range that goes over the "time.Tick(time.Second * 1)"
-// And at every Tick, we will print "Tick"
-// In the main function, call the go routine :)
+// Create a struct "Human", with 2 string attributes: Name and Description
+
+// Keep the Human struct, now in the json object there are going to be 2 humans
+// create a "humans" array of type Human and print it's values.
 
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"time"
 )
 
-func task() {
-	for range time.Tick(time.Second * 1) {
-		fmt.Println("Tick ")
-	}
+type Human struct {
+	Name        string
+	Description string
 }
 
 func main() {
-	go task()
-	time.Sleep(time.Second * 5)
+	humansJson := `[{"name": "Rick",
+                 "description": "has a grandson called Morty"},
+                {"name": "Cactus",
+                 "description": "is one of the powerpuff girls' name"}]`
+
+	var humans []Human
+	json.Unmarshal([]byte(humansJson), &humans)
+
+	fmt.Println(humans[0].Name + " is old and " + humans[0].Description)
+	fmt.Println(humans[1].Name + " is young and  " + humans[1].Description)
 }
