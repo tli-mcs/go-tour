@@ -1,38 +1,23 @@
-// Interfaces - Intro - Implicit implementation
-
-// In golang, we don't use the "implements" keyword when using an interface.
-// We don't have to say that explicitly, instead we need some type to satisfy the area() method.
-// We say something implements an interface if it has a method with the exact signature.
-// Inside our geometry interface, we have a signature called "area()"
-// In this exercise, we are going to create a function with that signature!
-
+// Interfaces -  Empty interfaces, bear in mind...
 package main
 
 import (
 	"fmt"
 )
 
-type geometry interface {
-	area() float64
-}
+type human map[string]interface{}
 
-// A rectangle struct
-type rect struct {
-	width, height float64
-}
-
-// We are going to create a function with the area() signature.
-// The function will be a receiver function (the receiver will be a rectangle "r")
-// The function will be named area, without any arguments and will return a float64 value
-
-// The return value will be the area of the rectangle
-func (r rect) area() float64 {
-	return r.width * r.height
-}
-
+// But there's an important thing to point out when it comes to retrieving and using a value from this map
+// let's say that we want to get the "age" value and increment it by 1.
 func main() {
-	// Create a new rectangle and store it in a variable
-	r := rect{width: 3, height: 4}
-	// Print the variable
-	fmt.Println(r.area())
+	person := make(human)
+	person["name"] = "Alice"
+	person["age"] = 21
+	person["height"] = 167.64
+
+	// Try to update the person age, the new value will be the existing one plus 1
+	// (When you run the program, see what happens), what's the error it arises?
+	person["age"] = person["age"].(int) + 1
+
+	fmt.Printf("%+v", person)
 }
