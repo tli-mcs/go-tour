@@ -1,9 +1,10 @@
-// Exercise: JSON!!
+// Exercise: JSON!! - Unknown beforehand data
 
-// Create a struct called "Dimensions" with 2 string attributes: Height and Weight
-// Create a struct "Human", with 2 string attributes: Name and Description and one called "Dimensions" of type Dimensions
-// Now in the json object we are going to have a nested object
-// Print out the values ONLY of that nested object
+// Now the JSON will be unstructured (we won't know the values beforehand)
+// When data is unstructured, we will create a map of strings to empty interfaces.
+// Create a map of string to an empty interface called "result"
+// Unmarshall (decode) the json into the result
+// Get the "birds" object into a variable called "birds" and print it's values
 
 package main
 
@@ -12,26 +13,27 @@ import (
 	"fmt"
 )
 
-type Human struct {
-	Name        string
-	Description string
-	Dimensions  Dimensions
-}
 
-type Dimensions struct {
-	Height string
-	Weight string
-}
 
 func main() {
-	humanJson := `{"name": "Rick",
-                  "description": "has a grandson called Morty",
-                  "dimensions": { 
-                    "height": "1.80m",
-                    "weight": "50kg"
-                  }
-                }`
-	human := Human{}
-	json.Unmarshal([]byte(humanJson), &human)
-	fmt.Println(human.Dimensions)
+  birdJson := `{
+                "birds": {
+                  "pigeon":"likes to perch on rocks",
+                  "eagle":"bird of prey"
+                },
+                "animals": "none"
+              }`
+
+  var result map[string]interface{}
+  json.Unmarshal([]byte(birdJson), &result)
+  
+  // The object stored in the "birds" key is also stored as 
+  // a map[string]interface{} type, and its type is asserted from
+  // the interface{} type
+  birds := result["birds"].(map[string]interface{})
+  
+  for key, value := range birds {
+    // Each value is an interface{} type, that is type asserted as a string
+    fmt.Println(key, value.(string))
+  }
 }
