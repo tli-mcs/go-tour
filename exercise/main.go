@@ -1,23 +1,37 @@
-// Interfaces -  Empty interfaces, bear in mind...
+// Exercise: Socket implementation (server side)
+
+// We will use the net library, and create a really basic server
+// Please read the docs before anything!
+// https://pkg.go.dev/net
+// When finished, try to connect with netcat (or telnet, or a client) and see if it works
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"net"
 )
 
-type human map[string]interface{}
-
-// But there's an important thing to point out when it comes to retrieving and using a value from this map
-// let's say that we want to get the "age" value and increment it by 1.
 func main() {
-	person := make(human)
-	person["name"] = "Alice"
-	person["age"] = 21
-	person["height"] = 167.64
+	fmt.Println("Start server")
+	// Now make the server listen at the 8000 port (tcp protocol)
+	ln, err := net.Listen("tcp", ":8000")
+	if err != nil {
+		fmt.Println("Some error has happened!")
+	}
 
-	// Try to update the person age, the new value will be the existing one plus 1
-	// (When you run the program, see what happens), what's the error it arises?
-	person["age"] = person["age"].(int) + 1
+	// Accept the connection
+	conn, err := ln.Accept()
 
-	fmt.Printf("%+v", person)
+	if err != nil {
+		fmt.Println("Some error has happened!")
+	}
+
+	// Run a loop forever (unless interrupted by signal)
+	for {
+		// Recive a message with the bufio.NewReader(connection).ReadString function
+		message, _ := bufio.NewReader(conn).ReadString('\n')
+		fmt.Print("Message Received:", string(message))
+	}
+
 }
