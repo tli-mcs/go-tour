@@ -1,37 +1,36 @@
-// Exercise: Socket implementation (server side)
-
-// We will use the net library, and create a really basic server
-// Please read the docs before anything!
-// https://pkg.go.dev/net
-// When finished, try to connect with netcat (or telnet, or a client) and see if it works
+// Exercise: Set up a simple HTTP Server
 package main
 
 import (
-	"bufio"
-	"fmt"
-	"net"
+	"log"
+	"net/http"
 )
 
+// In this exercise we will register the handler function for a given pattern!
+// We will use this HandleFunc BEWARE IT'S NOT THE SAME THAN HandlerFunc!!!!!
+// We will register these patterns (uri) in the defaultServerMux, we will talk about it later
+
+// Create a function named handler_1 that will write "Hello from Handlefunc #1"
+func handler_1(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Hello from Handlefunc #1"))
+}
+
+// Create a function named handler_2 that will write "Hello from handlefunc #2"
+func handler_2(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Hello from Handlefunc #2"))
+}
+
 func main() {
-	fmt.Println("Start server")
-	// Now make the server listen at the 8000 port (tcp protocol)
-	ln, err := net.Listen("tcp", ":8000")
-	if err != nil {
-		fmt.Println("Some error has happened!")
+	// This ListenAndServe will get 2 parameters: 1 - Address (:8080) in this case
+	//                                            2 - nil
+
+	// Now, use the http.HandleFunc() to register the handler_1 function to the "/handler1" pattern
+	// And use the same method to register the handler_2 function to "/handler2" pattern
+	http.HandleFunc("/handler1", handler_1)
+	http.HandleFunc("/handler2", handler_2)
+
+	server := http.ListenAndServe(":8080", nil)
+	if server != nil {
+		log.Print("Cannot start sever")
 	}
-
-	// Accept the connection
-	conn, err := ln.Accept()
-
-	if err != nil {
-		fmt.Println("Some error has happened!")
-	}
-
-	// Run a loop forever (unless interrupted by signal)
-	for {
-		// Recive a message with the bufio.NewReader(connection).ReadString function
-		message, _ := bufio.NewReader(conn).ReadString('\n')
-		fmt.Print("Message Received:", string(message))
-	}
-
 }
