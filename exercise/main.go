@@ -1,35 +1,38 @@
-// Exercise: Set up a simple HTTP Server
+// Exercise: Let's talk about ServeMux! And receivers in functions.
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 )
 
-// In this exercise we will register the handler function for a given pattern!
-// We will use this HandleFunc BEWARE IT'S NOT THE SAME THAN HandlerFunc!!!!!
-// We will register these patterns (uri) in the defaultServerMux, we will talk about it later
-
-// Create a function named handler_1 that will write "Hello from Handlefunc #1"
-func handler_1(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello from Handlefunc #1"))
+// We will have this Counter struct
+type Counter struct {
+	n int
 }
 
-// Create a function named handler_2 that will write "Hello from handlefunc #2"
-func handler_2(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello from Handlefunc #2"))
+// Imagine we have this counter.
+func (ctr *Counter) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	ctr.n++
+	fmt.Fprintf(w, "counter = %d\n", ctr.n)
 }
 
 func main() {
-	// This ListenAndServe will get 2 parameters: 1 - Address (:8080) in this case
-	//                                            2 - nil
+	// Create a ServeMux variable called 'mux'
+	// And assign it the value of a new servemux
+	mux := http.NewServeMux()
 
-	// Now, use the http.HandleFunc() to register the handler_1 function to the "/handler1" pattern
-	// And use the same method to register the handler_2 function to "/handler2" pattern
-	http.HandleFunc("/handler1", handler_1)
-	http.HandleFunc("/handler2", handler_2)
+	// Register a new Counter element in a variable called 'ctr'
+	ctr := new(Counter) // This will initialize the value to 0!
 
-	server := http.ListenAndServe(":8080", nil)
+	// Now we will use the Handle() function
+	// The first argument will be the "/counter" pattern
+	// The second argument will be the ctr function, in this case we can see very clearly how the handler acts as middleware.
+	mux.Handle("/counter", ctr)
+
+	// Start the server with ListenAndServe() function, and as the second parameter use the "mux" servemux you have created!
+	server := http.ListenAndServe(":8080", mux)
 	if server != nil {
 		log.Print("Cannot start sever")
 	}
