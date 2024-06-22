@@ -1,39 +1,66 @@
-// Exercise: Let's talk about ServeMux! And receivers in functions.
+// Exercise: Create an API with GIN framework - GET request to specific ITEM
 package main
 
+// In this exercise what we want to do is get an specific album by it's ID
+// The path we will want to go is "/album/$ID" and it will return our album with the ID (if it exists!!!)
+
 import (
-	"fmt"
-	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
-// We will have this Counter struct
-type Counter struct {
-	n int
+// album represents data about a record album.
+type album struct {
+	ID     string  `json:"id"`
+	Title  string  `json:"title"`
+	Artist string  `json:"artist"`
+	Price  float64 `json:"price"`
 }
 
-// Imagine we have this counter.
-func (ctr *Counter) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	ctr.n++
-	fmt.Fprintf(w, "counter = %d\n", ctr.n)
+// albums slice to seed record album data.
+var albums = []album{
+	{ID: "1", Title: "Blue Train", Artist: "John Coltrane", Price: 56.99},
+	{ID: "2", Title: "Jeru", Artist: "Gerry Mulligan", Price: 17.99},
+	{ID: "3", Title: "Sarah Vaughan and Clifford Brown", Artist: "Sarah Vaughan", Price: 39.99},
+}
+
+func getAlbums(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, albums)
+}
+
+func postAlbums(c *gin.Context) {
+	var newAlbum album
+	if err := c.BindJSON(&newAlbum); err != nil {
+		return
+	}
+	albums = append(albums, newAlbum)
+	c.IndentedJSON(http.StatusCreated, newAlbum)
+}
+
+func getSpecificAlbum(c *gin.Context) {
+	// get the ID in a variable
+	var id string = c.Param("id")
+
+	// check if it matches any of the slice ID (you have to iterate through the array)
+	for _, album := range albums {
+		if id == album.ID {
+			c.IndentedJSON(http.StatusOK, album)
+			return
+		}
+	}
+
+	// return some error message when album isn't found!
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
 }
 
 func main() {
-	// Create a ServeMux variable called 'mux'
-	// And assign it the value of a new servemux
-	mux := http.NewServeMux()
-
-	// Register a new Counter element in a variable called 'ctr'
-	ctr := new(Counter) // This will initialize the value to 0!
-
-	// Now we will use the Handle() function
-	// The first argument will be the "/counter" pattern
-	// The second argument will be the ctr function, in this case we can see very clearly how the handler acts as middleware.
-	mux.Handle("/counter", ctr)
-
-	// Start the server with ListenAndServe() function, and as the second parameter use the "mux" servemux you have created!
-	server := http.ListenAndServe(":8080", mux)
-	if server != nil {
-		log.Print("Cannot start sever")
-	}
+	// we will registrer a handler (or router) with gin.Default()
+	router := gin.Default()
+	router.GET("/albums", getAlbums)
+	router.POST("/albums", postAlbums)
+	// create the route specific to get the /album/$ID (https://github.com/gin-gonic/gin#parameters-in-path)
+	router.GET("/albums/:id", getSpecificAlbum)
+	// run the server with the Run() function
+	router.Run("localhost:8080")
 }
