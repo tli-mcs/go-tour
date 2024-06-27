@@ -1,41 +1,20 @@
 package main
 
-import "sort"
+import (
+	"strings"
+)
 
-type MinStack struct {
-	stack       []int
-	sortedStack []int
-}
-
-func Constructor() MinStack {
-	return MinStack{}
-}
-
-func (this *MinStack) Push(val int) {
-	this.stack = append(this.stack, val)
-	this.sortedStack = append(this.sortedStack, val)
-	sort.Ints(this.sortedStack)
-}
-
-func (this *MinStack) Pop() {
-	val := this.stack[len(this.stack)-1]
-	this.stack = this.stack[:len(this.stack)-1]
-	idx := -1
-	for i, v := range this.sortedStack {
-		if v == val {
-			idx = i
-			break
+func lengthOfLastWord(s string) int {
+	// 去掉字符串首尾空格
+	s = strings.TrimSpace(s)
+	slice := strings.Split(s, " ")
+	maxLen := 0
+	for _, v := range slice {
+		if len(v) > 0 {
+			maxLen = len(v)
 		}
 	}
-	this.sortedStack = append(this.sortedStack[:idx], this.sortedStack[idx+1:]...)
-}
-
-func (this *MinStack) Top() int {
-	return this.stack[len(this.stack)-1]
-}
-
-func (this *MinStack) GetMin() int {
-	return this.sortedStack[0]
+	return maxLen
 }
 
 func main() {
