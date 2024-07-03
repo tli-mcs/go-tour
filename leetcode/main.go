@@ -1,21 +1,24 @@
 package main
 
-import (
-	"strings"
-)
+import "fmt"
 
-func lengthOfLastWord(s string) int {
-	// 去掉字符串首尾空格
-	s = strings.TrimSpace(s)
-	slice := strings.Split(s, " ")
-	maxLen := 0
-	for _, v := range slice {
-		if len(v) > 0 {
-			maxLen = len(v)
-		}
-	}
-	return maxLen
+func test(x, y int) {
+	var z int
+
+	func() {
+		defer func() {
+			if recover() != nil {
+				z = 0
+			}
+		}()
+		panic("test panic")
+		// z = x / y
+		// return
+	}()
+
+	fmt.Printf("x / y = %d\n", z)
 }
 
 func main() {
+	test(2, 1)
 }
